@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.map.UserMapper">   <!-- 命名空间，名字可以随意起，只要不冲突即可 -->
+    <!-- 对象映射，可以不写 -->
+    <!-- 查询功能，resultType 设置返回值类型 -->
+
+    <select id="selectPwdByUsername" resultType="String">
+        SELECT pwd from SYS_User where username = #{username}
+    </select>
+    <select id="selectUser" resultType="com.example.demo.entity.User">
+        SELECT * from SYS_User where username = #{username}
+    </select>
+    <select id="selectUsername" resultType="String">
+        SELECT username from SYS_User where username = #{username}
+    </select>
+    <update id="updateUser">
+        UPDATE SYS_User SET pwd = #{arg1},email = #{arg2},question = #{arg3},answer = #{arg4} WHERE username = #{arg0}
+    </update>
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        insert into SYS_User (username,pwd,email,question,answer,image,role) values
+        (#{username},#{pwd},#{email},#{question},#{answer},#{image},#{role})
+    </insert>
+
+    <resultMap id="seeAllUser" type="com.example.demo.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="pwd" property="pwd"/>
+        <result column="email" property="email"/>
+        <result column="question" property="question"/>
+        <result column="answer" property="answer"/>
+        <result column="image" property="image"/>
+        <result column="role" property="role"/>
+    </resultMap>
+    <select id="selectAllUser" resultMap="seeAllUser">
+        SELECT * from SYS_User
+    </select>
+</mapper>

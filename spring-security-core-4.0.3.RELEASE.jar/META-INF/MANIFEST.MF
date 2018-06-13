@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Created-By: Spring Security Team
+Implementation-Title: spring-security-core
+Implementation-Version: 4.0.3.RELEASE
+Can-Redefine-Classes: true
+Agent-Class: true
+Premain-Class: true
+Can-Retransform-Classes: true
+Can-Set-Native-Method-Prefix: false
+

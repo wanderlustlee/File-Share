@@ -58,4 +58,20 @@ public class UserServiceImpl implements UserService {
     public List<User> seeAllUser() {
         return userDAO.seeAllUser();
     }
+
+    public int findTotal(){
+        return userDAO.findTotal();
+    }
+
+    public List<Diary> pageShare(int startRow){
+        return userDAO.pageShare(startRow);
+    }
+
+    public List<Diary> selectShareByName(String fileName,String username){
+        return userDAO.selectShareByName(fileName,username);
+    }
+
+    public void deleteDiary(String id){
+        userDAO.deleteDiary(id);
+    }
 }

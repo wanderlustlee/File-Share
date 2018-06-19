@@ -68,7 +68,7 @@
     <div class="container">
         <div class="header_top_left">
             <ul>
-                <li>&copy; 全景NBA</li>
+                <li>&copy; File-Share</li>
             </ul>
         </div>
         <div class="header_top_right" th:if="${session.user}!=null">
@@ -151,7 +151,6 @@
                         <label for="username" class="control-label">用户名</label>
                         <input type="text" name="nickName" id="nickName" th:value="${session.user.getUsername()}"
                                class="form-control" onfocus="nickNameFocus()" onblur="nickNameBlur()" disabled="true">
-                        <input type="button" name="checkName" value="验证用户名是否可用" onclick="checkUsername(form1.nickName)">
                         <div id="nickName_prompt" style="width:260px;color:red;"></div>
                         <div id="toolTip1" style="width:260px;color:red;"></div>
                     </div>

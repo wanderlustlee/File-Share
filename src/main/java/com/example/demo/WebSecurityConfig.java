@@ -56,8 +56,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
                 .antMatchers("/js/**", "/css/**", "/images/*", "/fonts/**", "/**/*.png", "/**/*.jpg").permitAll()
-                .antMatchers("/", "/login", "/signin","/seeShare","/userregister").permitAll()
-                .antMatchers("/adminHome").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/", "/login", "/signin","/seeShare","/userregister","/pageController","/selectShareByName").permitAll()
+                .antMatchers("/adminHome","/seeUsers","/gotoreleaseNotice","/releaseNotice","/adminSeeShare","/deleteDiary").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -94,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 //class MD5Util {
 //
-//    private static final String SALT = "tamboo";
+//    private static final String SALT = "hongxf";
 //
 //    public static String encode(String password) {
 //        password = password + SALT;

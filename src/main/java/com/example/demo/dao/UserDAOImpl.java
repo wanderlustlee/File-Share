@@ -119,6 +119,7 @@ public class UserDAOImpl implements UserDAO {
         return flag;
     }
 
+    //发布公告
     @Override
     public void releaseNotice(String notice) {
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().getTime());
@@ -134,6 +135,7 @@ public class UserDAOImpl implements UserDAO {
         sqlSession.commit();
     }
 
+    //查询公告
     @Override
     public List<Notice> seeNotice() {
         List<Notice> Noticelist = new ArrayList<>();
@@ -207,5 +209,35 @@ public class UserDAOImpl implements UserDAO {
         list = userMapper.selectAllUser();
         sqlSession.commit();
         return list;
+    }
+    //获得记录总数
+    public int findTotal(){
+        DiaryMapper diaryMapper = sqlSession.getMapper(DiaryMapper.class);
+        int total = diaryMapper.findTotal();
+        return total;
+    }
+
+    //分页查询
+    public List<Diary> pageShare(int startRow){
+        List<Diary> list = new ArrayList<>();
+        DiaryMapper diaryMapper = sqlSession.getMapper(DiaryMapper.class);
+        list = diaryMapper.pageShare(startRow);
+        return list;
+    }
+
+    //多条件查询，动态sql
+    public List<Diary> selectShareByName(String fileName,String username){
+        System.out.println(fileName+username);
+        List<Diary> list = new ArrayList<>();
+        DiaryMapper diaryMapper = sqlSession.getMapper(DiaryMapper.class);
+        list = diaryMapper.selectShareByName(fileName,username);
+        return list;
+    }
+
+    //多条件查询，动态sql
+    public void deleteDiary(String id){
+        int diaryid = Integer.parseInt(id);
+        DiaryMapper diaryMapper = sqlSession.getMapper(DiaryMapper.class);
+        diaryMapper.deleteDiary(diaryid);
     }
 }

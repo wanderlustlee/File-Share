@@ -138,6 +138,11 @@ public class UserController {
         return "notice/releaseNotice";
     }
 
+    @RequestMapping("/adminSeeShare")
+    public String page13() {
+        return "share/adminSeeShare";
+    }
+
 
 
 }

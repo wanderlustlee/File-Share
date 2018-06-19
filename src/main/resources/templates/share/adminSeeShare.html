@@ -3,31 +3,38 @@
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorator="layout">
 <head>
-    <title>上传稿件</title>
+    <title>查看稿件</title>
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- //for-mobile-apps -->
-    <link th:href="@{css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{css/bootstrap.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{css/font-awesome.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{css/bootstrap-theme.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{css/templatemo_style.css}" rel="stylesheet" type="text/css">
     <link th:href="@{css/style.css}" rel="stylesheet">
-    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet">
-    <link th:href="@{css/bootstrap-theme.min.css}" rel="stylesheet">
-    <link th:href="@{css/templatemo_style.css}" rel="stylesheet">
-    <link th:href="@{css/font-awesome.min.css}" rel="stylesheet">
     <script th:src="@{js/jquery-1.11.1.min.js}" type="text/javascript"></script>
-    <!-- //js -->
-    <script th:src="@{js/bootstrap.js}" type="text/javascript"></script>
-
     <script type="text/javascript">
-        function seeshare() {
-            document.getElementById('form1').action = "/seeShare";
-            document.getElementById('form1').submit();
-        }
-    </script>
-</head>
+    function download(diarycontent) {
+        var string1 = diarycontent;
+        string1 = encodeURI(encodeURI(string1));//将中文进行编码
+        document.getElementById('form1').action = "/download?diarycontent="+string1;
+        document.getElementById('form1').submit();
+    }
 
+    function deleteDiary(diaryid) {
+        var string2 = diaryid;
+        string1 = encodeURI(encodeURI(string2));//将中文进行编码
+        document.getElementById('form1').action = "/deleteDiary?diaryid="+string2;
+        document.getElementById('form1').submit();
+    }
+</script>
+</head>
 <body>
+<!-- header -->
+
 <div class="header_top">
     <div class="container">
         <div class="header_top_left">
@@ -42,6 +49,7 @@
                 <input type="submit" name="logout" value="退出" class="btn btn-danger">
             </form>
         </div>
+
         <div class="clearfix"></div>
     </div>
 </div>
@@ -80,7 +88,7 @@
             <div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
                 <nav class="stroke">
                     <ul class="nav navbar-nav">
-                        <li ><a href="/home" target="_top" class="hvr-bounce-to-bottom">首页</a></li>
+                        <li ><a href="/adminHome" target="_top" class="hvr-bounce-to-bottom">首页</a></li>
                         <li><a href="/share" target="_top" class="hvr-bounce-to-bottom">上传稿件</a></li>
                         <li><a href="/seeShare" target="_top" class="hvr-bounce-to-bottom">稿件浏览</a></li>
                         <li><a href="/seeNotice" target="_top" class="hvr-bounce-to-bottom">查看公告</a></li>
@@ -91,58 +99,71 @@
                     </ul>
 
 
+                    <!-- search-scripts -->
+                    <script th:src="@{js/classie.js}" type="text/javascript"></script>
+                    <script th:src="@{js/uisearch.js}" type="text/javascript"></script>
+
                 </nav>
             </div>
             <!-- /.navbar-collapse -->
         </nav>
     </div>
 </div>
+
+<!-- //header -->
 <div class="templatemo-bg-image-2">
     <div class="container">
-        <div class="col-md-12">
-            <form class="form-horizontal templatemo-contact-form-1" action="/usershare" method="post" name="form1"  enctype="multipart/form-data" id="form1">
-                                <div class="form-group">
-                    <div class="col-md-12">
-                        <h1 class="margin-bottom-15">上传你的稿件</h1>
-                        <p>发表你的稿件到社区，与众多稿件上传者共同分享</p>
-                    </div>
+        <form class="form-horizontal templatemo-contact-form-1" name="form1" id="form1" action="/selectShareByName" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input class="input-medium search-query" type="text" name="fileName" placeholder="根据稿件名查找"/>
+                <input class="input-medium search-query" type="text" name="username" placeholder="根据用户名查找"/>
+                <button type="submit" class="btn">查找</button>
+                <div th:if="${not #lists.isEmpty(pageList)}">
+                <table>
+                    <tr>
+                        <td width="115" height="37">标题</td>
+                        <td width="115" height="37">内容</td>
+                        <td width="132">发表时间</td>
+                        <td width="180">发表用户</td>
+                        <td width="100">操作</td>
+                        <td width="100">操作</td>
+                    </tr>
+                    <tr th:each="diary:${pageList}">
+                        <td th:text="${diary.title}"></td>
+                        <td th:text="${diary.fileName}"></td>
+                        <td th:text="${diary.writeTime}"></td>
+                        <td th:text="${diary.username}"></td>
+                        <td><button class="btn btn-small btn-link" type="button" th:onclick="'javascript:download(\''+${diary.fileName}+'\')'">下载</button></td>
+                        <td><button class="btn btn-small btn-link" type="button" th:onclick="'javascript:deleteDiary(\''+${diary.id}+'\')'">删除</button></td>
+                    </tr>
+                </table>
+            </div>
+
+                <div th:if="${not #lists.isEmpty(selectList)}">
+                    <table>
+                        <tr>
+                            <td width="115" height="37">标题</td>
+                            <td width="115" height="37">内容</td>
+                            <td width="132">发表时间</td>
+                            <td width="180">发表用户</td>
+                            <td width="100">操作</td>
+                            <td width="100">操作</td>
+                        </tr>
+                        <tr th:each="diary2:${selectList}">
+                            <td th:text="${diary2.title}"></td>
+                            <td th:text="${diary2.fileName}"></td>
+                            <td th:text="${diary2.writeTime}"></td>
+                            <td th:text="${diary2.username}"></td>
+                            <td><button class="btn btn-small btn-link" type="button" th:onclick="'javascript:download(\''+${diary2.fileName}+'\')'">下载</button></td>
+                            <td><button class="btn btn-small btn-link" type="button" th:onclick="'javascript:deleteDiary(\''+${diary2.id}+'\')'">删除</button></td>
+                        </tr>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <label class="control-label">标题 </label>
-                        <div class="templatemo-input-icon-container">
-                            <i class="fa fa-pencil-square-o"></i>
-                            <textarea rows="2" cols="50" class="form-control" name="title"
-                                      placeholder="注意主题规范"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <label class="control-label">稿件 </label>
-                        <div class="templatemo-input-icon-container">
-                            <i class="fa fa-pencil-square-o"></i>
-                            <input type="file" class="form-control" name="file">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> Send a copy to my email.
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <input type="submit" name="share" id="share" onclick="javascript:alert('分享成功！')" value="分享"
-                               class="btn btn-info pull-right">
-                    </div>
-                </div>
-            </form>
-        </div>
+            </div>
+            <ul class="pagination pagination-centered" th:each="pageNum:${session.pageArray}">
+                <li class="active"><a th:href="@{'/pageController?pageNum='+${pageNum}}" th:text="${pageNum}"></a></li>
+            </ul>
+        </form>
     </div>
 </div>
 <!-- footer -->
@@ -192,5 +213,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>

@@ -9,4 +9,12 @@ public interface DiaryMapper {
     public int insertDiary(Diary diary) throws Exception;
 
     public List<Diary> selectShare();
+
+    public int findTotal();
+
+    public List<Diary> pageShare(int startRow);
+
+    public List<Diary> selectShareByName(String fileName,String username);
+
+    public void deleteDiary(int diaryid);
 }

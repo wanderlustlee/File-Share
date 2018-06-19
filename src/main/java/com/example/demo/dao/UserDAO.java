@@ -28,4 +28,12 @@ public interface UserDAO {
     List<Notice> seeNotice();
 
     public List<User> seeAllUser();
+
+    public int findTotal();
+
+    public List<Diary> pageShare(int startRow);
+
+    public List<Diary> selectShareByName(String fileName,String username);
+
+    public void deleteDiary(String id);
 }

@@ -21,4 +21,29 @@
     <select id="selectShare" resultMap="seeShare">
         SELECT * FROM Diary
     </select>
+    <!--查询总记录的条数-->
+    <select id="findTotal" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM Diary
+    </select>
+    <!--分页查询十条-->
+    <select id="pageShare" resultMap="seeShare">
+        SELECT * FROM Diary limit #{startRow},10
+    </select>
+
+    <select id="selectShareByName" resultMap="seeShare">
+        SELECT * FROM Diary
+        <where>
+            <!--where标签自动去掉满足条件的第一个and -->
+            <if test="arg0 != null and arg0 != ''">
+                and fileName LIKE CONCAT('%',#{arg0 },'%' )
+            </if>
+            <if test="arg1 != null and arg1 != ''">
+                and username = #{arg1}
+            </if>
+        </where>
+    </select>
+    
+    <delete id="deleteDiary" parameterType="java.lang.Integer">
+        delete from diary where id = #{diaryid}
+    </delete>
 </mapper>

@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,9 +53,79 @@ public class ShareController {
 
     @RequestMapping(value = "/seeShare", method = RequestMethod.GET)
     public String seeshare(Model model, HttpServletRequest request) {
-        List<Diary> list = new LinkedList<Diary>();
-        list = userService.seeShare();
-        model.addAttribute("list", list);
+        HttpSession session = request.getSession();
+        List<Diary> pageList = new LinkedList<Diary>();
+        //初始显示第一页
+        pageList = userService.pageShare(0);
+        model.addAttribute("pageList", pageList);
+        int total = userService.findTotal();//总记录数
+        int pageTotal = total % 10 == 0 ? total / 10 : total / 10 + 1;//根据总记录数算出总页数
+        int pageArray[] = new int[pageTotal];//页数数组，供前端遍历
+        for (int i = 1; i <= pageTotal; i++) {
+            pageArray[i-1] = i;
+        }
+        session.setAttribute("pageArray",pageArray);
+        return "/share/seeShare.html";
+    }
+
+    @RequestMapping(value = "/adminSeeShare", method = RequestMethod.GET)
+    public String adminSeeShare(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        List<Diary> pageList = new LinkedList<Diary>();
+        //初始显示第一页
+        pageList = userService.pageShare(0);
+        model.addAttribute("pageList", pageList);
+        int total = userService.findTotal();//总记录数
+        int pageTotal = total % 10 == 0 ? total / 10 : total / 10 + 1;//根据总记录数算出总页数
+        int pageArray[] = new int[pageTotal];//页数数组，供前端遍历
+        for (int i = 1; i <= pageTotal; i++) {
+            pageArray[i-1] = i;
+        }
+        session.setAttribute("pageArray",pageArray);
+        return "/share/adminSeeShare.html";
+    }
+
+    //分页查询
+    @RequestMapping(value = "/pageController",method = RequestMethod.GET)
+    public String pageController(Model model, HttpServletRequest request){
+        String pageNum = request.getParameter("pageNum");//要查询的页数
+        List<Diary> pageList = new ArrayList<>();
+        int startRow = (Integer.parseInt(pageNum) - 1) * 10;//当前页开始的行数
+        pageList = userService.pageShare(startRow);
+        model.addAttribute("pageList", pageList);
+        System.out.println(pageList.toString());
+        return "/share/seeShare.html";
+    }
+
+    //多条件查询
+    @RequestMapping(value = "/selectShareByName",method = RequestMethod.POST)
+    public String selectShareByName(Model model, HttpServletRequest request){
+        String fileName = request.getParameter("fileName");
+        String username = request.getParameter("username");
+        List<Diary> selectList = new ArrayList<>();
+        selectList = userService.selectShareByName(fileName,username);
+        System.out.println(selectList.size());
+        model.addAttribute("selectList",selectList);
+        return "/share/seeShare.html";
+    }
+
+    //删除
+    @RequestMapping(value = "/deleteDiary",method = RequestMethod.POST)
+    public String deleteDiary(Model model, HttpServletRequest request){
+        String id = request.getParameter("diaryid");
+        userService.deleteDiary(id);
+        HttpSession session = request.getSession();
+        List<Diary> pageList = new LinkedList<Diary>();
+        //初始显示第一页
+        pageList = userService.pageShare(0);
+        model.addAttribute("pageList", pageList);
+        int total = userService.findTotal();//总记录数
+        int pageTotal = total % 10 == 0 ? total / 10 : total / 10 + 1;//根据总记录数算出总页数
+        int pageArray[] = new int[pageTotal];//页数数组，供前端遍历
+        for (int i = 1; i <= pageTotal; i++) {
+            pageArray[i-1] = i;
+        }
+        session.setAttribute("pageArray",pageArray);
         return "/share/seeShare.html";
     }
 
@@ -100,7 +171,6 @@ public class ShareController {
     /**
      * @Method: findFileSavePathByFileName
      * @Description: 通过文件名和存储上传文件根目录找出要下载的文件的所在路径
-     * @Anthor:孤傲苍狼
      * @param filename 要下载的文件名
      * @param saveRootPath 上传文件保存的根目录，也就是/WEB-INF/upload目录
      * @return 要下载的文件的存储目录

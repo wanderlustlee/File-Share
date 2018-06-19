@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorator="layout">
 <head>
-    <title>查看故事</title>
+    <title>查看稿件</title>
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
     <meta charset="UTF-8">
@@ -33,7 +33,7 @@
     <div class="container">
         <div class="header_top_left">
             <ul>
-                <li>&copy; 全景NBA</li>
+                <li>&copy; File-Share</li>
             </ul>
         </div>
         <div class="header_top_right" th:if="${session.user}!=null">
@@ -107,9 +107,12 @@
 <!-- //header -->
 <div class="templatemo-bg-image-2">
     <div class="container">
-        <form class="form-horizontal templatemo-contact-form-1" name="form1" id="form1" action="" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal templatemo-contact-form-1" name="form1" id="form1" action="/selectShareByName" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <div th:if="${not #lists.isEmpty(list)}">
+                <input class="input-medium search-query" type="text" name="fileName" placeholder="根据稿件名查找"/>
+                <input class="input-medium search-query" type="text" name="username" placeholder="根据用户名查找"/>
+                <button type="submit" class="btn">查找</button>
+                <div th:if="${not #lists.isEmpty(pageList)}">
                 <table>
                     <tr>
                         <td width="115" height="37">标题</td>
@@ -118,7 +121,7 @@
                         <td width="180">发表用户</td>
                         <td width="100">操作</td>
                     </tr>
-                    <tr th:each="diary:${list}">
+                    <tr th:each="diary:${pageList}">
                         <td th:text="${diary.title}"></td>
                         <td th:text="${diary.fileName}"></td>
                         <td th:text="${diary.writeTime}"></td>
@@ -127,7 +130,29 @@
                     </tr>
                 </table>
             </div>
+
+                <div th:if="${not #lists.isEmpty(selectList)}">
+                    <table>
+                        <tr>
+                            <td width="115" height="37">标题</td>
+                            <td width="115" height="37">内容</td>
+                            <td width="132">发表时间</td>
+                            <td width="180">发表用户</td>
+                            <td width="100">操作</td>
+                        </tr>
+                        <tr th:each="diary2:${selectList}">
+                            <td th:text="${diary2.title}"></td>
+                            <td th:text="${diary2.fileName}"></td>
+                            <td th:text="${diary2.writeTime}"></td>
+                            <td th:text="${diary2.username}"></td>
+                            <td><button class="btn btn-small btn-link" type="button" th:onclick="'javascript:download(\''+${diary2.fileName}+'\')'">下载</button></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
+            <ul class="pagination pagination-centered" th:each="pageNum:${session.pageArray}">
+                <li class="active"><a th:href="@{'/pageController?pageNum='+${pageNum}}" th:text="${pageNum}"></a></li>
+            </ul>
         </form>
     </div>
 </div>

@@ -1,5 +1,5 @@
 # File-Share
-基于SSH和security的文件共享平台
+基于SSM和security的文件共享平台
 
 可上传文件分享，下载文件。
 
